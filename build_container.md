@@ -12,7 +12,7 @@ Clone this repo or download the zip file. Unzip the file and cd into the app fol
 
 ## 2. Dockerfile Overview
 
-The Dockerfile is already provided in the app folder. Here's what it contains:
+The Dockerfile is already provided in the workshop folder. Here's what it contains:
 
 ```dockerfile
 FROM python:3.13-alpine
