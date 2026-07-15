@@ -242,7 +242,7 @@ Here's a complete `docker-compose.yaml` showing all concepts:
 version: "3.8"
 
 services:
-  database:
+  db:
     image: postgres:16-alpine
     container_name: app_database
     ports:
@@ -274,7 +274,7 @@ services:
     volumes:
       - ./app:/app             # Bind mount for live reload
     depends_on:
-      - database
+      - db
     deploy:
       resources:
         limits:
