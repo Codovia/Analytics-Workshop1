@@ -1,195 +1,267 @@
-## Docker post-installation setup
-Do the optional precodure configuration to work better with Docker.
+# Docker Commands
 
-### Run Docker as non-root user
+Docker is a containerization system that packages and runs applications with their dependencies inside containers. There are several Docker commands you must know when working with Docker.
+
+## Docker Post-Installation Setup
+
+### Run Docker as Non-Root User
+
 To create the docker group and add your user:
-1. Create the docker group.
-```
-sudo groupadd docker
-```
-2. Add your user to the docker group.
-```
-sudo usermod -aG docker $USER
-```
+
+1. Create the docker group:
+   ```bash
+   sudo groupadd docker
+   ```
+
+2. Add your user to the docker group:
+   ```bash
+   sudo usermod -aG docker $USER
+   ```
 
 3. Activate the changes to groups:
-```
-newgrp docker 
-```
-4. Verify that you can run docker commands without sudo.
-```
-docker images
-```
+   ```bash
+   newgrp docker
+   ```
 
-<br />
+4. Verify that you can run docker commands without sudo:
+   ```bash
+   docker images
+   ```
 
-## Docker Commands
-Docker is a containerization system which packages and runs the application with its dependencies inside a container. There are several docker commands you must know when working with Docker.
-### 1. Docker version
-To find the installed docker version
-Command:
-```
-docker  -version
-``` 
-Example:
-```
+---
+
+## Essential Docker Commands
+
+### 1. Docker Version
+
+To find the installed Docker version:
+
+```bash
 docker --version
-Docker version 19.03.9, build 9d988398e7
 ```
 
-<br>
-
-### 2. Downloading image
-To work with any docker image we need to download the docker image first.<br /> 
-Command:
+Example output:
 ```
+Docker version 27.3.1, build ce12230
+```
+
+### 2. Downloading an Image
+
+To work with any Docker image, we need to download it first:
+
+```bash
 docker pull <IMAGE>
 ```
-Example of pulling alpine:latest image
-```
+
+Example of pulling Alpine image:
+```bash
 docker pull alpine:latest
 ```
 
-<br>
+### 3. List All Docker Images
 
-### 3. List all the docker images
-To list all the images that is locallt available in the host machine, simply run the below command. This will list all the docker images in the local system.
-<br />
-Command:
-```
-docker images
-Example:
-```
-REPOSITORY  TAG  IMAGE ID       CREATED      SIZE
-alpine     latest  c059bfaa849c 6 weeks ago  5.59MB
-```
+To list all images available locally on your host machine:
+
+```bash
 docker images
 ```
 
-### 3. Run docker image
-The docker run command first creates a writeable container layer over the specified image, and then starts it using the specified command.
-<br>
-Command:
+Example output:
 ```
+REPOSITORY   TAG      IMAGE ID       CREATED        SIZE
+alpine       latest   c059bfaa849c   6 weeks ago    7.39MB
+postgres     16       abc123xyz456   2 days ago     229MB
+```
+
+### 4. Run Docker Image
+
+The `docker run` command creates a writeable container layer over the specified image and starts it:
+
+```bash
 docker run [options] <IMAGE>
 ```
-> Explore options [here](https://docs.docker.com/engine/reference/run/)
 
+Common options:
+- `-d` - Run in detached mode (background)
+- `-it` - Interactive mode with terminal
+- `-p` - Publish container port to host
+- `-v` - Mount volume
+- `--name` - Assign a name to the container
+- `--rm` - Automatically remove container when it exits
 
-Example of running alpine:latest image, the options -t allows us to acces the terminal and -i gets stdin stream added. Basicaly using -ti adds the terminal driver.
+> Explore all options [here](https://docs.docker.com/engine/reference/run/)
+
+Example of running Alpine image with interactive terminal:
+```bash
+docker run -it alpine:latest
+# or
+docker run -it alpine:latest sh
 ```
-docker run -t -i alpine:latest
-or
-docker run -ti alpine:latest
-```
 
-<br>
+### 5. List Running Containers
 
-### 4. Running containers
-Let us check what all the container are running currently, The command. `docker ps` will list only running containers
-<br>
-Command:
-```
+The `docker ps` command lists only running containers:
+
+```bash
 docker ps
 ```
-Emaple:
-```
-$ docker ps
-CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
-8973c7347905        alpine:latest       "/bin/sh"           2 minutes ago       Up 2 minutes                            ecstatic_jang
-```
-<br />
 
-### 5. Access the docker container
-The `docker exec` command runs a new command in a running container. We need container id to execute into conatiner, get the container id by `docker ps`.
-<br />
-Command to execute into container:
+Example output:
 ```
-docker exec [OPTIONS] <CONTAINER_ID> COMMAND
+CONTAINER ID   IMAGE          COMMAND       CREATED        STATUS        PORTS     NAMES
+8973c7347905   alpine:latest  "/bin/sh"     2 minutes ago  Up 2 minutes            ecstatic_jang
 ```
+
+To list all containers including stopped ones:
+```bash
+docker ps -a
+```
+
+### 6. Access a Running Container
+
+The `docker exec` command runs a new command in a running container:
+
+```bash
+docker exec [options] <CONTAINER_ID> <COMMAND>
+```
+
 > Explore options [here](https://docs.docker.com/engine/reference/commandline/exec/)
 
-Example: Execute into running alpine:latest container, and let us create one directory and a simple blank text file.
-```
-docker exec -ti 8973c7347905 sh
+Example: Execute into a running Alpine container and create files:
+```bash
+# First, get container ID from docker ps
+docker ps
+
+# Then exec into it
+docker exec -it 8973c7347905 sh
+
+# Inside container:
 / # mkdir demo
 / # cd demo
 /demo # touch helloworld.txt
 /demo # ls
 helloworld.txt
-/demo # 
+/demo # exit
 ```
-`mkdir` command to create directory or folder<br />
-`cd` change directory used to change the current working directory <br />
-`touch` Touch command allows to create a blank file <br />
-<br />
 
-### 6. Stop the container
-Now let us stop the running container 
-<br />
-Command:
-```
+Commands used inside container:
+- `mkdir` - Create directory
+- `cd` - Change directory
+- `touch` - Create empty file
+- `ls` - List files
+
+### 7. Stop a Container
+
+Stop a running container:
+
+```bash
 docker stop [OPTIONS] <CONTAINER_ID>
 ```
-> Explore options [here](https://docs.docker.com/engine/reference/commandline/stop/)<br />
-Example of stopping alpine:latest running container
-```
+
+> Explore options [here](https://docs.docker.com/engine/reference/commandline/stop/)
+
+Example:
+```bash
 docker stop 8973c7347905
 ```
-Here once you stop the container, the container is available locally but it is not in the running state. In the follwing step we will how to remove stopped container.   
-<br  />
 
-### 7. List all the containers
-`docker ps -a` will list all the containers including stopped containers.
-<br/>
-Example output:
-```
-mis@mispl-lap-19:~$ docker ps -a
-CONTAINER ID        IMAGE                     COMMAND                  CREATED             STATUS                       PORTS                                                 NAMES
-4cc4008815d8        alpine:latest             "/bin/sh"                57 minutes ago      Exited (137) 2 minutes ago
-```
+Once stopped, the container still exists locally but is not running.
 
-<br />
+### 8. Start a Stopped Container
 
-### 8. Remove the container 
-You can remove the container or multiple containers by `docker rm` command.<br />
-Command
-```
-docker rm [OPTIONS] <CONTAINER...>
-```
-> Explore Options [here](https://docs.docker.com/engine/reference/commandline/rm/)
-Example:
-```
-docker rm 4cc4008815d8
-```
-Note: Once you stop the container 
+Start a stopped container:
 
-### 8. Start the container
-Let's start the alpine:latest container again. Remember previously you have 
-<br />
-Command:
-```
+```bash
 docker start [OPTIONS] <CONTAINER_ID>
 ```
+
 > Explore options [here](https://docs.docker.com/engine/reference/commandline/start/)
 
-
-Example of starting alpine:latest container. Before to start the container we need the container id, so let's get the container id by `docker ps -a` command.
-```
+Example:
+```bash
+# First list all containers to find the stopped one
 docker ps -a
 
-docker start 4cc4008815d8
+# Start it
+docker start 8973c7347905
 ```
-<br />
 
-### 10. Removing image
-You can remove the local images by `docker rmi` command.
-<br />
-Command:
+### 9. Remove a Container
+
+Remove one or more containers:
+
+```bash
+docker rm [OPTIONS] <CONTAINER_ID>
 ```
-docker rmi [OPTIONS] <IMAGE_ID> / <IMAGE_ID...>
+
+> Explore options [here](https://docs.docker.com/engine/reference/commandline/rm/)
+
+To remove a running container, use the `-f` (force) flag:
+```bash
+docker rm -f 8973c7347905
 ```
-Example: Remove alpine:latest container
+
+### 10. Remove an Image
+
+Remove local images:
+
+```bash
+docker rmi [OPTIONS] <IMAGE_ID> or <IMAGE_NAME>
 ```
+
+Example:
+```bash
 docker rmi c059bfaa849c
+# or by name
+docker rmi alpine:latest
 ```
+
+To force removal:
+```bash
+docker rmi -f alpine:latest
+```
+
+### 11. View Container Logs
+
+View logs from a container:
+
+```bash
+docker logs <CONTAINER_ID>
+```
+
+Follow logs in real-time:
+```bash
+docker logs -f <CONTAINER_ID>
+```
+
+### 12. Remove All Stopped Containers
+
+Clean up all stopped containers:
+```bash
+docker container prune
+```
+
+### 13. Remove All Unused Images
+
+Clean up all unused images:
+```bash
+docker image prune -a
+```
+
+## Quick Reference Card
+
+| Command | Description |
+|---------|-------------|
+| `docker --version` | Show Docker version |
+| `docker pull <img>` | Download an image |
+| `docker images` | List local images |
+| `docker run <img>` | Run a container |
+| `docker ps` | List running containers |
+| `docker ps -a` | List all containers |
+| `docker exec <id> <cmd>` | Execute command in container |
+| `docker stop <id>` | Stop a container |
+| `docker start <id>` | Start a stopped container |
+| `docker rm <id>` | Remove container |
+| `docker rmi <img>` | Remove image |
+| `docker logs <id>` | Show container logs |
+| `docker system prune` | Remove unused data |

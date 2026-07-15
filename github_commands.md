@@ -1,179 +1,309 @@
-# Basic GIT Commands:
-## Create a gitHub account
-https://github.com/
+# Basic Git Commands
 
+## Create a GitHub Account
 
+Visit [https://github.com/](https://github.com/) and sign up for an account.
 
-Run following command to verify if Git works on your computer:
+## Verify Git Installation
 
-    git --version
+Run the following command to verify if Git works on your computer:
 
-## Configure git:
-After installing to start using git from your computer, you must enter your credentials to identify yourself as the author of your work. The username and email address should match the ones you use in GitHub.
+```bash
+git --version
+```
 
-Add your user name:
+## Configure Git
 
-    git config --global user.name "your_username"
+After installing Git, you must enter your credentials to identify yourself as the author of your work. The username and email address should match the ones you use in GitHub.
+
+Add your username:
+```bash
+git config --global user.name "your_username"
+```
 
 Add your email address:
-
-    git config --global user.email "your_email_address@example.com"
+```bash
+git config --global user.email "your_email_address@example.com"
+```
 
 To check the configuration, run:
+```bash
+git config --global --list
+```
 
-    git config --global --list
+## Add SSH Keys to Your GitHub Account
 
-Add ssh keys to your GitHub account:
-    
-    1. sudo apt install xclip
-    2. ssh-keygen -t ed25519 -C  "your_email"
-    3. xclip -sel clip < ~/.ssh/id_ed25519.pub
-    4. Visit this url: https://github.com/settings/ssh/new. Paste the key and save.
+SSH keys allow you to interact with GitHub without entering your password every time.
 
+1. Install xclip (if not already installed):
+   ```bash
+   sudo apt install xclip
+   ```
 
-## Fork a repository
-Forking refers to making a copy of a project you want to contribute to. Now lets fork a project provided to complete this activity. 
+2. Generate SSH key:
+   ```bash
+   ssh-keygen -t ed25519 -C "your_email@example.com"
+   ```
+
+3. Copy SSH key:
+   ```bash
+   xclip -sel clip < ~/.ssh/id_ed25519.pub
+   ```
+
+4. Add the SSH key to GitHub:
+   - Visit: https://github.com/settings/ssh/new
+   - Paste the key and save
+
+## Fork a Repository
+
+Forking refers to making a copy of a project you want to contribute to.
 
 Follow these steps to fork a project:
 
-1. Go to the project url using this link https://github.com/UniCourt/Analytics-Workshop1 or any other link
-2. Click on the fork button in the project page
-3. Select a namespace to fork our project. Select your namespace here.
+1. Go to the project URL using this link: https://github.com/UniCourt/Analytics-Workshop1
+2. Click on the **Fork** button in the project page
+3. Select your namespace to fork the project into
 
-## Clone a repository
+## Clone a Repository
+
 Cloning a repository means the files from the remote repository are downloaded to your computer, and a connection is created.
 
-This connection requires you to add credentials. There are two ways to add credentials SSH and HTTPS. We use SSH method here.
+This connection requires credentials. There are two ways to add credentials: SSH and HTTPS. We recommend the SSH method.
 
-Authenticate with GitLab by following the instructions in the SSH documentation.
+### Clone with SSH
 
-1. Go to your project’s landing page and click Clone.
-2. Copy the URL for Clone with SSH.
-3. Open a terminal and go to the directory where you want to clone the files. Run this command:
+1. Go to your project's landing page and click the green **Code** button
+2. Copy the SSH URL
+3. Open a terminal and go to the directory where you want to clone the files
+4. Run this command:
 
-        git clone <url_to_clone>
+   ```bash
+   git clone git@github.com:<your-username>/Analytics-Workshop1.git
+   ```
 
-    For example,
+   Example:
+   ```bash
+   git clone git@github.com:johndoe/Analytics-Workshop1.git
+   ```
 
-        git clone "git@github.com:<your-username>/Analytics-Workshop1.git"
+## View Your Remote Repositories
 
-## View your remote repositories
-To view the remote repositories that you have added, run following command:
+To view the remote repositories that you have added:
 
-    git remote -v
-## Configuring remote repositories
+```bash
+git remote -v
+```
 
-We now need to configure our local sytem to the remote repositories in the git. Generally two remote repositories are maintained origin and upstream. 
-- Origin is a clone of your forked repository, from which you push and pull.
-- Upstream is the main repo you forked, from where you pull and keep cloned repository updated, but you generally don't have push access to it.
+## Configure Remote Repositories
 
-Since you cloned your repo from github.com you should have already have a remote called origin.
+We need to configure our local system to the remote repositories in Git. Generally, two remote repositories are maintained: **origin** and **upstream**.
 
-Run the following command to add upstream repository.
+- **origin** - Your forked repository (where you push and pull from)
+- **upstream** - The main repository you forked (where you pull updates from)
 
-    git remote add upstream <upstream_clone_url>
+Run the following command to add the upstream repository:
 
-For example,
+```bash
+git remote add upstream git@github.com:UniCourt/Analytics-Workshop1.git
+```
 
-    git remote add upstream "git@github.com:UniCourt/Analytics-Workshop1.git"
+To verify the remotes:
+```bash
+git remote -v
+```
 
+Expected output:
+```
+origin    git@github.com:your-username/Analytics-Workshop1.git (fetch)
+origin    git@github.com:your-username/Analytics-Workshop1.git (push)
+upstream  git@github.com:UniCourt/Analytics-Workshop1.git (fetch)
+upstream  git@github.com:UniCourt/Analytics-Workshop1.git (push)
+```
 
-## Create a branch
-Branches allow you to develop features, fix bugs, or safely experiment with new ideas in a contained area of your repository. You always create a branch from an existing branch. Typically, you might create a new branch from the default branch of your repository.
+## Create a Branch
 
+Branches allow you to develop features, fix bugs, or safely experiment with new ideas in a contained area of your repository. You always create a branch from an existing branch.
 
-To create a new branch called excercise run the following command:
+To create a new branch called `exercise`:
+```bash
+git checkout -b exercise
+```
 
-    git checkout -b excercise
+To switch to an existing branch:
+```bash
+git checkout <branch_name>
+```
 
-
-To switch to an existing branch we use the following command:
-
-    git checkout <branch_name>
-
-
-To see what branch you are currently on try the following command.
-
-```shell
+To see what branch you are currently on:
+```bash
 git branch
 ```
 
-Make sure you are on the exercise branch by running
-
-```shell
+Make sure you are on the exercise branch:
+```bash
 git checkout exercise
 ```
 
-## Download the latest changes in the project
-To get an up-to-date copy of the project, we use pull command. This gets all the changes made to the repository, since the last clone or pull. 
+## Download the Latest Changes
 
-To get all the latest updates run the following command:
+To get an up-to-date copy of the project, we use the `pull` command. This gets all the changes made to the repository since the last clone or pull.
 
-    git pull upstream <branch_name>
+To get all the latest updates from upstream:
+```bash
+git pull upstream main
+```
 
-To pull changes to your newly created branch, run following command:
+Or from origin (your fork):
+```bash
+git pull origin main
+```
 
-    git pull upstream main
+## Create a New File
 
-## Create new text file
-Create new file index.txt in your local system.
-Add following line to your index.txt file and save:
+Create a new file `index.txt` in your local system.
 
-    Welcome to GIT workshop!
+Add the following line to your `index.txt` file and save:
+```
+Welcome to Git workshop!
+```
 
-## View the changed files 
+## View the Changed Files
+
 This command displays the state of the working directory and the staging area.
-To check all the files you have changed run following command.
 
-    git status
-## View differences
-Now lets see the differences between your local unstaged changes and the latest version that you cloned or pulled. 
+To check all the files you have changed:
+```bash
+git status
+```
 
-Run following command to see the differences:
+## View Differences
 
-    git diff
+See the differences between your local unstaged changes and the latest version:
 
-## Stage the local changes
-We use git add to add all/required files that are changed to the staging area.
-To stage a file that you have changed for commit run following command:
+```bash
+git diff
+```
 
-    git add <file_name>
+## Stage the Local Changes
 
-To add your index.txt file, run following command:
+We use `git add` to add all/required files that have changed to the staging area.
 
-    git add index.txt
+To stage a specific file:
+```bash
+git add <file_name>
+```
 
-To stage all files in the current directory and subdirectory, we can use following command:
+To add your `index.txt` file:
+```bash
+git add index.txt
+```
 
-    git add .
+To stage all files in the current directory and subdirectories:
+```bash
+git add .
+```
 
-## Commit the stagged files:
-The git commit command creates a snapshot of all the stagged changes in the project history.
-Now to commit all the changed that are made run the following command:
+## Commit the Staged Files
 
-    git commit -m "message"
-The message in the commit command must describe the intension of your commit. For example,
+The `git commit` command creates a snapshot of all the staged changes in the project history.
 
-    git commit -m "Adding new file"
+To commit all the changes:
+```bash
+git commit -m "message"
+```
 
+The message should describe the intention of your commit.
 
-## Send the changes to the remote repository
-Push command sends all the committed changes to the remote repository. To push all your changes to the remote repository run the following command:
+Example:
+```bash
+git commit -m "Add new file with welcome message"
+```
 
-    git push origin <branch_name>
+## Send Changes to Remote Repository
 
-To push your changes
+The `push` command sends all committed changes to the remote repository.
 
-    git push origin excercise
+To push your changes:
+```bash
+git push origin <branch_name>
+```
 
-You can now go to github.com and see the updated code in your browser.
+To push your exercise branch:
+```bash
+git push origin exercise
+```
 
-## Create a pull request:
-Pull request is the process of merging the changed version of code to its original version. A pull request allows us to visualize the differences between the original code and our proposed code changes. 
+You can now go to GitHub and see the updated code in your browser.
 
-Steps to create a pull request:
-1. When we push changes to the remote repository, git prompts us with a link to create a merge request. We can copy-paste the link in the browser or create a new pull request from the project page in the browser.
+## Create a Pull Request
 
-2. Then select the base branch and compare branch that needs to be merged. The base branch is the one that has your changes and the compare branch is the original branch.
+A Pull Request (PR) is the process of merging your changed version of code into the original version. A Pull Request allows you to visualize the differences between the original code and your proposed code changes.
 
-3. Add proper title, description and submit the merge request.
+Steps to create a Pull Request:
+
+1. When you push changes to the remote repository, Git may prompt you with a link to create a Pull Request. You can copy-paste the link in your browser or create a new PR from the project page.
+
+2. Select the:
+   - **base branch** - The branch you want to merge into (usually `main`)
+   - **compare branch** - Your branch with changes (e.g., `exercise`)
+
+3. Add a proper title and description, then submit the Pull Request.
+
+## Common Git Workflow
+
+Here's the complete workflow for contributing to a project:
+
+```bash
+# 1. Fork the repository (on GitHub)
+
+# 2. Clone your fork
+git clone git@github.com:your-username/project.git
+cd project
+
+# 3. Add upstream remote
+git remote add upstream git@github.com:original-owner/project.git
+
+# 4. Create a new branch
+git checkout -b feature-branch
+
+# 5. Make changes and commit
+git add .
+git commit -m "Describe your changes"
+
+# 6. Push to your fork
+git push origin feature-branch
+
+# 7. Create Pull Request (on GitHub)
+
+# 8. After merge, update your local main branch
+git checkout main
+git pull upstream main
+
+# 9. Delete the feature branch
+git branch -d feature-branch
+git push origin --delete feature-branch
+```
+
+## Useful Git Commands Reference
+
+| Command | Description |
+|---------|-------------|
+| `git init` | Initialize a new Git repository |
+| `git clone <url>` | Clone a repository |
+| `git status` | Show working tree status |
+| `git add <file>` | Stage file for commit |
+| `git add .` | Stage all changes |
+| `git commit -m "msg"` | Commit staged changes |
+| `git push origin <branch>` | Push to remote |
+| `git pull origin <branch>` | Pull from remote |
+| `git branch` | List branches |
+| `git branch <name>` | Create new branch |
+| `git checkout <branch>` | Switch branch |
+| `git checkout -b <name>` | Create and switch branch |
+| `git merge <branch>` | Merge branch into current |
+| `git remote -v` | Show remotes |
+| `git log` | Show commit history |
+| `git diff` | Show unstaged changes |
+| `git reset <file>` | Unstage file |
+| `git stash` | Stash changes temporarily |
+| `git stash pop` | Apply stashed changes |

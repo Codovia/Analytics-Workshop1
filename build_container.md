@@ -1,65 +1,124 @@
-### Build the app’s container image
-in order to build the application, we need to use a Dockerfile. A Dockerfile is simply a text-based script of instructions that is used to create a container image
+# Build the App's Container Image
 
-1. Get the app from git
-```    
-https://github.com/UniCourt/Analytics-Workshop1 ==> clone this repo or download zip
-```
-Unzip the file and cd into the app folder.
+In order to build the application, we need to use a Dockerfile. A Dockerfile is a text-based script of instructions that is used to create a container image.
 
-2. Create a file named Dockerfile in the above folder with the following contents.
+## 1. Get the App from Git
+
+```bash
+https://github.com/UniCourt/Analytics-Workshop1
 ```
-FROM python:3.7-alpine
+
+Clone this repo or download the zip file. Unzip the file and cd into the app folder.
+
+## 2. Dockerfile Overview
+
+The Dockerfile is already provided in the workshop folder. Here's what it contains:
+
+```dockerfile
+FROM python:3.13-alpine
 
 ENV FLASK_APP=app.py
 ENV FLASK_RUN_HOST=0.0.0.0
 
-COPY . /app
 WORKDIR /app
-RUN pip install -r requirements.txt
 
+COPY requirements.txt /app/
+RUN pip install --no-cache-dir -r requirements.txt
 
-CMD ["flask", "run"]
-```
-Contents of Dockerfile:<br>
-a. Get the base image: `FROM python:3.7-alpine`. This pulls the base python 3.7 image.<br>
-b. Declaring environment variables.<br>
-c. Copy the custom code into the image by `COPY . /app` and change working directory.<br>
-c. Install required packages in the image. `RUN pip install -r requirements.txt`.<br>
+COPY . /app
 
-3. Create a new requirements.txt file with following contents
+EXPOSE 5000
 
-```
-Flask
-psycopg2-binary
-````
-This will install Flask and psycopg2-binary, which is required for postgres connection.
-
-
-4. open a terminal and go to the app directory with the Dockerfile. Now build the container image using the docker build command
-```
-docker build -t app-new .
-````
-<!-- Remember the -d and -p flags? We’re running the new container in “detached” mode (in the background) and creating a mapping between the host’s port 8000 to the container’s port 3000. Without the port mapping, we wouldn’t be able to access the application. -->
-
-### Start an app container
-
-Start your container using the docker run command and specify the name of the image we just created
-```commandline
-docker run app-new
+CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]
 ```
 
-### Note: Do not panic if you see errors mentioned below in your terminal, this is because we do not have necessary things to connect to db
-```commandline
-KeyError: 'POSTGRES_USER'
+### Dockerfile Contents Explained:
+
+a. **Get the base image**: `FROM python:3.13-alpine`
+   - This pulls the official Python 3.13 image based on Alpine Linux for a minimal size
+
+b. **Environment variables**: Set Flask configuration
+   - `FLASK_APP`: Specifies the application entry point
+   - `FLASK_RUN_HOST`: Sets the host to listen on all interfaces
+
+c. **Set working directory**: `WORKDIR /app`
+   - Sets the working directory for subsequent instructions
+
+d. **Copy and install dependencies**: Better layer caching
+   - Copy `requirements.txt` first for better Docker layer caching
+   - Install Python dependencies
+
+e. **Copy application code**: `COPY . /app`
+   - Copy the rest of the application code
+
+f. **Expose port**: `EXPOSE 5000`
+   - Documents that the container listens on port 5000
+
+g. **Default command**: `CMD ["flask", "run"...]`
+   - Command to run when the container starts
+
+## 3. Requirements File
+
+The `requirements.txt` file contains:
+
+```
+Flask==3.0.3
+psycopg2-binary==2.9.9
 ```
 
-## To view the running container
-```commandline
+This installs Flask (web framework) and psycopg2-binary (PostgreSQL adapter).
+
+## 4. Build the Container Image
+
+Open a terminal, go to the app directory with the Dockerfile, and build the container image:
+
+```bash
+cd app
+docker build -t flask-app .
+```
+
+The `-t` flag tags the image with a name (`flask-app`).
+
+## 5. Start the Container
+
+Start your container using the docker run command:
+
+```bash
+docker run -p 5000:5000 flask-app
+```
+
+## Note: Expected Error
+
+Do not panic if you see an error similar to:
+
+```
+psycopg2.OperationalError: could not connect to server: Connection refused
+```
+
+or
+
+```
+NameError: name 'db' is not defined
+```
+
+This is expected because we haven't set up the database yet. The application needs PostgreSQL to connect to, which we'll set up in the Docker Compose section.
+
+## 6. View the Running Container
+
+To see running containers:
+
+```bash
 docker ps
 ```
-This will list all the running containers.
 
-## To stop the running container
+This will list all running containers.
 
-    docker stop <container if that you see when you run>
+## 7. Stop the Running Container
+
+To stop the container:
+
+```bash
+docker stop <container_id>
+```
+
+Replace `<container_id>` with the actual container ID you see from `docker ps`.
